@@ -1,16 +1,161 @@
 ---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import ProductCard from "../components/ProductCard.astro";
+import { enlaceWhatsApp } from "../data/contacto";
+import { colecciones } from "../data/colecciones";
+import { productosDemo } from "../data/productos-demo";
+
+const whatsappLink = enlaceWhatsApp("Hola, me gustaría consultar un libro personalizado.");
+const destacados = productosDemo.filter((producto) => producto.destacado);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<SiteLayout>
+  <main id="contenido">
+    <section class="hero-section">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Libros personalizados por encargo</p>
+          <h1>Hay días que merecen <em>quedarse.</em></h1>
+          <p class="hero-intro">
+            Un libro para guardar las palabras, las fotografías y los pequeños momentos de vuestra comunión, boda o bautizo.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#colecciones">
+              Encuentra tu ocasión
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M10 5l5 5-5 5" /></svg>
+            </a>
+            <a class="text-link" href="#como-funciona">Así lo hacemos <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-note">
+            <span class="note-icon" aria-hidden="true">✳</span>
+            <p>Lo pensamos contigo, con calma y a tu medida.</p>
+          </div>
+        </div>
+
+        <div class="hero-art" role="img" aria-label="Ilustración de un libro hecho a mano rodeado de flores">
+          <div class="art-sun"></div>
+          <div class="art-caption"><span>Recuerdos</span><span>para siempre</span></div>
+          <div class="book-shadow"></div>
+          <div class="book-spine"></div>
+          <div class="book-cover">
+            <span class="cover-stamp">T<br />A</span>
+            <span class="cover-title">Trozos<br /><i>con Alma</i></span>
+            <span class="cover-rule"></span>
+            <span class="cover-subtitle">Un libro para<br />volver a sentir</span>
+            <svg class="cover-flower" viewBox="0 0 100 120" aria-hidden="true">
+              <path d="M49 108c-2-25-4-45 1-70m0 42c-17-7-25-16-29-27m29 39c14-8 23-19 28-33" />
+              <path d="M49 39c-19 1-25-13-17-23 8-9 19-1 18 9 1-10 13-18 20-8 7 11-2 22-21 22Z" />
+              <path d="M23 53c-10-8-19-1-15 7 4 7 13 4 18 2m51 0c12 3 18-5 12-11-6-5-13 1-17 6m-27 1c-12 0-16-8-10-13" />
+            </svg>
+          </div>
+          <span class="art-sparkle sparkle-one" aria-hidden="true">✳</span>
+          <span class="art-sparkle sparkle-two" aria-hidden="true">✳</span>
+          <span class="art-side-note">HECHO PARA TI <span>·</span> CON ALMA</span>
+        </div>
+      </div>
+      <div class="hero-bottomline"><span>COMUNIÓN</span><i></i><span>BODA</span><i></i><span>BAUTIZO</span><i></i><span>Y TODO LO QUE QUIERAS RECORDAR</span></div>
+    </section>
+
+    <section class="section collection-section" id="colecciones">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Para cada historia</p>
+          <h2>¿Qué momento<br /><em>quieres guardar?</em></h2>
+        </div>
+        <p class="section-aside">Cada celebración tiene una forma distinta de quedarse contigo. Empieza por aquí y descubre ideas para la tuya.</p>
+      </div>
+      <div class="collection-grid">
+        {colecciones.map((coleccion, index) => (
+          <article class={`collection-card collection-card-${coleccion.slug}`}>
+            <a class="collection-card-link" href={`/colecciones/${coleccion.slug}/`} aria-label={`Descubrir libros para ${coleccion.nombre}`}>
+              <div class="card-illustration" aria-hidden="true">
+                <span class="card-index">0{index + 1}</span>
+                <span class="card-symbol">{coleccion.slug === "boda" ? "∞" : coleccion.slug === "bautizo" ? "❋" : "✳"}</span>
+                <span class="card-ribbon"></span>
+              </div>
+              <div class="card-copy">
+                <span class="eyebrow">Colección</span>
+                <h3>{coleccion.nombre}</h3>
+                <p>{coleccion.resumen}</p>
+                <span class="card-link-label">Descubrir ideas <span aria-hidden="true">↗</span></span>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+      <p class="collection-footnote">¿Tu ocasión es diferente? También podemos conversar sobre otras celebraciones.</p>
+    </section>
+
+    <section class="section featured-section" id="productos">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Ideas para empezar</p>
+          <h2>Así podrían verse<br /><em>vuestros libros.</em></h2>
+        </div>
+        <p class="section-aside">Una pequeña muestra ficticia para enseñar cómo presentaremos los modelos, sus detalles y un precio orientativo.</p>
+      </div>
+      <div class="demo-notice"><span>CATÁLOGO DE PRUEBA</span> Nombres, portadas, opciones y precios inventados para previsualizar la web.</div>
+      <div class="product-grid product-grid-featured">
+        {destacados.map((producto) => <ProductCard product={producto} />)}
+      </div>
+      <a class="text-link featured-all-link" href="#colecciones">Explorar por ocasión <span aria-hidden="true">↓</span></a>
+    </section>
+
+    <section class="process-section" id="como-funciona">
+      <div class="section process-inner">
+        <div class="process-intro">
+          <p class="eyebrow eyebrow-light">Sencillo y personal</p>
+          <h2>Un buen recuerdo<br />empieza <em>con una idea.</em></h2>
+          <p>No necesitas tenerlo todo decidido. Empezamos por lo que quieres recordar y lo vamos dando forma juntos.</p>
+          {whatsappLink && <a class="button button-light" href={whatsappLink} target="_blank" rel="noreferrer">Cuéntanos tu idea <span aria-hidden="true">↗</span></a>}
+        </div>
+        <ol class="process-steps">
+          <li><span class="step-number">01</span><div><h3>Nos cuentas</h3><p>Qué celebráis, para quién es el libro y qué te gustaría conservar.</p></div></li>
+          <li><span class="step-number">02</span><div><h3>Lo pensamos contigo</h3><p>Comentamos las posibilidades, los detalles y el precio antes de confirmar nada.</p></div></li>
+          <li><span class="step-number">03</span><div><h3>Le damos forma</h3><p>Con la idea clara, concretamos cómo preparar un recuerdo que hable de vosotros.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section editor-section">
+      <div class="editor-art" aria-hidden="true">
+        <div class="editor-paper"><span>01</span><i></i><i></i><i></i><b>Tu historia</b><small>Una página cada vez</small></div>
+        <div class="editor-pencil"></div>
+        <span class="editor-doodle doodle-a">✳</span><span class="editor-doodle doodle-b">✧</span>
+      </div>
+      <div class="editor-copy">
+        <p class="eyebrow">Una idea que estamos preparando</p>
+        <h2>Tu libro, paso<br />a <em>paso.</em></h2>
+        <p>Queremos crear un editor sencillo para que puedas explorar opciones, dar forma a tu libro y obtener una orientación de precio antes de escribirnos.</p>
+        <p class="editor-note"><span>Por ahora</span> puedes contarnos tu idea directamente. El precio final se confirmará contigo antes de seguir adelante.</p>
+      </div>
+    </section>
+
+    <section class="faq-section" id="dudas">
+      <div class="section faq-inner">
+        <div class="faq-heading">
+          <p class="eyebrow">Antes de empezar</p>
+          <h2>Preguntas que<br /><em>nos hacemos.</em></h2>
+          <p>Y si te queda alguna, la resolvemos contigo.</p>
+        </div>
+        <div class="faq-list">
+          <details><summary>¿Tengo que saber exactamente qué quiero?<span aria-hidden="true">+</span></summary><p>No. Basta con tener una ocasión o una idea. Te ayudaremos a definir los detalles conversando contigo.</p></details>
+          <details><summary>¿Cuánto cuesta un libro personalizado?<span aria-hidden="true">+</span></summary><p>El precio está pendiente de confirmar y dependerá de las características del libro. Te daremos una orientación y confirmaremos el importe contigo antes de avanzar.</p></details>
+          <details><summary>¿Puedo incluir fotos o mensajes?<span aria-hidden="true">+</span></summary><p>Podemos valorar juntos qué recuerdos quieres reunir y qué opciones encajan con el libro que tienes en mente.</p></details>
+          <details><summary>¿Cómo hago el encargo?<span aria-hidden="true">+</span></summary><p>La atención será directa y personal por WhatsApp. Primero conversaremos sobre la idea; no hay compra ni pago en la web.</p></details>
+          <details><summary>¿Cuánto tarda en estar listo?<span aria-hidden="true">+</span></summary><p>El plazo dependerá del libro y de sus detalles. Lo consultaremos contigo antes de confirmar el encargo.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing-cta">
+      <div class="closing-flower" aria-hidden="true">✳</div>
+      <p class="eyebrow eyebrow-light">Lo importante es lo que significa</p>
+      <h2>¿Qué te gustaría<br /><em>recordar?</em></h2>
+      <p>Cuéntanos la ocasión. Pensaremos contigo cómo convertirla en un libro para guardar.</p>
+      {whatsappLink
+        ? <a class="button button-light" href={whatsappLink} target="_blank" rel="noreferrer">Abrir conversación por WhatsApp <span aria-hidden="true">↗</span></a>
+        : <span class="contact-pending">El acceso directo a WhatsApp estará disponible al configurar el número de contacto.</span>}
+    </section>
+  </main>
+</SiteLayout>

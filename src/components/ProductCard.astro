@@ -1,0 +1,31 @@
+---
+import { productosDemo } from "../data/productos-demo";
+
+interface Props {
+  product: (typeof productosDemo)[number];
+}
+
+const { product } = Astro.props;
+---
+
+<article class={`product-card product-cover-${product.portada}`}>
+  <a href={`/libros/${product.slug}/`} aria-label={`Ver ejemplo de producto: ${product.nombre}`}>
+    <div class="product-cover" role="img" aria-label={`Portada ilustrada de muestra: ${product.nombre}`}>
+      <span class="product-cover-mark" aria-hidden="true">ta</span>
+      <span class="product-cover-flower" aria-hidden="true">✳</span>
+      <span class="product-cover-title">
+        {product.textoPortada.split("\n").map((line) => <span>{line}</span>)}
+      </span>
+      <span class="product-cover-caption">TROZOS CON ALMA</span>
+    </div>
+    <div class="product-card-copy">
+      <span class="product-type">{product.tipo}</span>
+      <h3>{product.nombre}</h3>
+      <p>{product.resumen}</p>
+      <div class="product-card-meta">
+        <span class="product-demo-price">Ejemplo: {product.precioDemo} €</span>
+        <span class="product-arrow" aria-hidden="true">↗</span>
+      </div>
+    </div>
+  </a>
+</article>

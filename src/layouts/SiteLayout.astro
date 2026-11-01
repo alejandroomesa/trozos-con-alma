@@ -1,0 +1,80 @@
+---
+import "../styles/global.css";
+import { enlaceWhatsApp } from "../data/contacto";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Trozos con Alma · Libros para guardar recuerdos",
+  description = "Libros personalizados para comuniones, bodas y bautizos. Cuéntanos qué recuerdo quieres conservar y lo preparamos contigo.",
+} = Astro.props;
+const whatsappLink = enlaceWhatsApp("Hola, me gustaría consultar un libro personalizado.");
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f8f5ef" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="Trozos con Alma, inicio">
+          <span class="brand-mark" aria-hidden="true">ta</span>
+          <span class="brand-name">Trozos <em>con Alma</em></span>
+        </a>
+        <nav class="main-nav" aria-label="Navegación principal">
+          <a href="/#colecciones">Colecciones</a>
+          <a href="/#productos">Ejemplos de libros</a>
+          <a href="/#como-funciona">Cómo funciona</a>
+          <a href="/#dudas">Preguntas frecuentes</a>
+        </nav>
+        <a class="header-cta" href="/#contacto">
+          <span>Hablemos de tu idea</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M10 5l5 5-5 5" /></svg>
+        </a>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="site-footer" id="contacto">
+      <div class="footer-main">
+        <div class="footer-brand-block">
+          <a class="brand brand-footer" href="/">
+            <span class="brand-mark" aria-hidden="true">ta</span>
+            <span class="brand-name">Trozos <em>con Alma</em></span>
+          </a>
+          <p>Un lugar para las palabras, las fotos y las historias que quieres conservar.</p>
+        </div>
+        <div class="footer-note">
+          <span class="eyebrow">Hablemos</span>
+          <p>¿Tienes una celebración en mente? Cuéntanos qué te gustaría guardar.</p>
+          {whatsappLink
+            ? <a class="button button-light" href={whatsappLink} target="_blank" rel="noreferrer">Escribir por WhatsApp <span aria-hidden="true">↗</span></a>
+            : <p class="footer-contact-pending">El acceso directo al chat se añadirá aquí al configurar el teléfono de contacto.</p>}
+        </div>
+        <div class="footer-links">
+          <span class="eyebrow">Explora</span>
+          <a href="/#colecciones">Colecciones</a>
+          <a href="/#productos">Ejemplos de libros</a>
+          <a href="/#como-funciona">Cómo funciona</a>
+          <a href="/#dudas">Preguntas frecuentes</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© {new Date().getFullYear()} Trozos con Alma</span>
+        <span>Libros hechos para volver a ellos.</span>
+      </div>
+    </footer>
+  </body>
+</html>

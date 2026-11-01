@@ -1,0 +1,90 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import { enlaceWhatsApp } from "../../data/contacto";
+import { colecciones } from "../../data/colecciones";
+import { productosDemo } from "../../data/productos-demo";
+
+export function getStaticPaths() {
+  return colecciones.map((coleccion) => ({
+    params: { slug: coleccion.slug },
+    props: { coleccion },
+  }));
+}
+
+const { coleccion } = Astro.props;
+const whatsappLink = enlaceWhatsApp(`Hola, me gustaría consultar un libro para ${coleccion.nombre.toLowerCase()}.`);
+const productos = productosDemo.filter((producto) => producto.coleccion === coleccion.slug);
+---
+
+<SiteLayout
+  title={`${coleccion.nombre} · Trozos con Alma`}
+  description={`${coleccion.resumen} Descubre ideas para un libro personalizado de ${coleccion.nombre.toLowerCase()}.`}
+>
+  <main id="contenido">
+    <section class={`detail-hero detail-hero-${coleccion.slug}`}>
+      <div class="detail-hero-inner">
+        <div class="detail-copy">
+          <a class="back-link" href="/#colecciones"><span aria-hidden="true">←</span> Todas las ocasiones</a>
+          <p class="eyebrow">{coleccion.etiqueta}</p>
+          <h1>Un libro para<br /><em>{coleccion.nombre.toLowerCase()}.</em></h1>
+          <p class="detail-lede">{coleccion.resumen}</p>
+          <p class="detail-description">{coleccion.introduccion}</p>
+          {whatsappLink && <a class="button button-primary" href={whatsappLink} target="_blank" rel="noreferrer">Consultar por WhatsApp <span aria-hidden="true">↗</span></a>}
+        </div>
+        <div class="detail-illustration" aria-hidden="true">
+          <span class="detail-stamp">T<br />A</span>
+          <span class="detail-motif">{coleccion.slug === "boda" ? "∞" : coleccion.slug === "bautizo" ? "❋" : "✳"}</span>
+          <span class="detail-motif-caption">UNA HISTORIA<br />PARA CONSERVAR</span>
+          <span class="detail-leaf leaf-one">⌁</span><span class="detail-leaf leaf-two">✳</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section detail-ideas">
+      <div class="detail-ideas-heading">
+        <p class="eyebrow">Para inspirarte</p>
+        <h2>Pequeños detalles<br /><em>que cuentan mucho.</em></h2>
+        <p>Estas son algunas ideas para empezar a imaginar el contenido de vuestro libro. Las posibilidades concretas las conversaremos contigo.</p>
+      </div>
+      <ul class="idea-list">
+        {coleccion.ideas.map((idea, index) => (
+          <li><span class="idea-number">0{index + 1}</span><span>{idea}</span><span class="idea-star" aria-hidden="true">✳</span></li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="product-listing-section" id="modelos">
+      <div class="section product-listing-inner">
+        <div class="product-listing-heading">
+          <div>
+            <p class="eyebrow">Modelos para inspirarte</p>
+            <h2>Algunas ideas<br /><em>para tu libro.</em></h2>
+          </div>
+          <p>Estos ejemplos enseñan cómo aparecerán los libros de esta colección. Las opciones finales se definirán contigo.</p>
+        </div>
+        <div class="demo-notice"><span>PRODUCTOS DE MUESTRA</span> Todos los nombres, detalles y precios de esta página son ficticios y provisionales.</div>
+        <div class="product-grid">
+          {productos.map((producto) => <ProductCard product={producto} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-note">
+      <div class="detail-note-inner">
+        <span class="note-flower" aria-hidden="true">✳</span>
+        <div><p class="eyebrow">Sin prisa, sin sorpresas</p><h2>{coleccion.cierre}</h2><p>El precio y el plazo todavía están por definir. Te los confirmaremos contigo antes de avanzar con cualquier encargo.</p></div>
+        {whatsappLink
+          ? <a class="button button-primary" href={whatsappLink} target="_blank" rel="noreferrer">Hablemos de tu idea <span aria-hidden="true">↗</span></a>
+          : <a class="text-link" href="/#como-funciona">Ver cómo funciona <span aria-hidden="true">→</span></a>}
+      </div>
+    </section>
+
+    <nav class="other-collections" aria-label="Otras colecciones">
+      <div class="section other-collections-inner">
+        <span class="eyebrow">Sigue explorando</span>
+        <div>{colecciones.filter((otra) => otra.slug !== coleccion.slug).map((otra) => <a href={`/colecciones/${otra.slug}/`}>{otra.nombre} <span aria-hidden="true">↗</span></a>)}</div>
+      </div>
+    </nav>
+  </main>
+</SiteLayout>
