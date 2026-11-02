@@ -1,0 +1,246 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Administración · Trozos con Alma">
+  <main id="contenido" class="admin-shell">
+    <div class="admin-breadcrumb"><span>Panel</span><span aria-hidden="true">/</span><span>Contenido</span></div>
+    <div class="admin-heading-row">
+      <div>
+        <p class="eyebrow">Tu espacio de trabajo</p>
+        <h1>Gestiona tu <em>contenido.</em></h1>
+        <p class="admin-lede">Organiza los libros y las historias que aparecen en Trozos con Alma.</p>
+      </div>
+      <span class="admin-prototype-badge"><i></i> Panel conectado</span>
+    </div>
+
+    <div class="admin-prototype-note" role="note">
+      <span class="admin-note-icon" aria-hidden="true">i</span>
+      <p><strong>Guardado en D1 listo.</strong> Los slugs se generan en el servidor y la base de datos impide duplicados. Antes de abrir el panel al cliente, configura Cloudflare Access y sus variables de validación. Las imágenes se conectarán al configurar R2.</p>
+    </div>
+
+    <div class="admin-tabs" role="tablist" aria-label="Tipo de contenido">
+      <button class="admin-tab is-active" id="tab-products" type="button" role="tab" aria-selected="true" aria-controls="panel-products" data-admin-tab="products">
+        <span class="admin-tab-icon" aria-hidden="true">▤</span><span>Productos</span><small>Libros y álbumes</small>
+      </button>
+      <button class="admin-tab" id="tab-collections" type="button" role="tab" aria-selected="false" aria-controls="panel-collections" data-admin-tab="collections" tabindex="-1">
+        <span class="admin-tab-icon" aria-hidden="true">✳</span><span>Colecciones</span><small>Ocasiones y eventos</small>
+      </button>
+    </div>
+
+    <section class="admin-form-panel" id="panel-products" role="tabpanel" aria-labelledby="tab-products" data-admin-panel="products">
+      <div class="admin-form-heading">
+        <div><span class="admin-form-kicker">Catálogo</span><h2>Nuevo producto</h2><p>Completa la información del libro que quieres mostrar.</p></div>
+        <span class="admin-required-note">Los campos con <b>*</b> son obligatorios</span>
+      </div>
+      <form class="admin-form" data-admin-form="Producto" data-content-type="product">
+        <input type="hidden" name="id" />
+        <div class="admin-form-grid">
+          <label class="admin-field"><span>Nombre del producto <b>*</b></span><input name="name" type="text" placeholder="Ej. Mi día especial" required maxlength="90" data-slug-source="product" /><small>El nombre que verán las personas en la web.</small></label>
+          <label class="admin-field"><span>Dirección web (slug)</span><input name="slugPreview" type="text" placeholder="Se genera al escribir el nombre" readonly aria-readonly="true" data-slug-target="product" /><small>Se genera en el servidor y se añade un número si ya existe.</small></label>
+          <label class="admin-field"><span>Colección <b>*</b></span><select name="collection" required><option value="">Cargando colecciones…</option></select><small>Primero guarda una colección publicada.</small></label>
+          <label class="admin-field"><span>Tipo de producto <b>*</b></span><select name="type" required><option value="">Selecciona el tipo</option><option>Álbum de recuerdos</option><option>Libro de firmas</option><option>Libro de dedicatorias</option><option>Libro de bienvenida</option><option>Otro</option></select><small>Ayuda a describir el formato del libro.</small></label>
+          <label class="admin-field admin-field-wide"><span>Descripción breve <b>*</b></span><textarea name="summary" rows="3" maxlength="180" placeholder="Resume qué hace especial este libro…" required></textarea><small>Hasta 180 caracteres. Aparecerá en las tarjetas del catálogo.</small></label>
+          <label class="admin-field admin-field-wide"><span>Descripción completa</span><textarea name="description" rows="5" placeholder="Cuenta qué recuerdos puede guardar y para quién está pensado…"></textarea><small>Puedes añadir detalles, usos y opciones de personalización.</small></label>
+          <label class="admin-field"><span>Precio orientativo (€)</span><input name="price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 34,00" /><small>Opcional. Déjalo vacío si el precio se consulta por encargo.</small></label>
+          <label class="admin-field"><span>Formato del libro</span><input name="format" type="text" placeholder="Ej. 24 × 24 cm" /><small>Medidas o tipo de encuadernación.</small></label>
+          <label class="admin-field"><span>Número de páginas</span><input name="pages" type="number" min="1" step="1" placeholder="Ej. 36" /></label>
+          <label class="admin-field"><span>Texto de portada</span><input name="coverText" type="text" placeholder="Ej. Un día para siempre" maxlength="70" /><small>Texto que aparecerá en la portada de muestra.</small></label>
+          <label class="admin-field admin-field-wide"><span>Opciones de personalización</span><textarea name="options" rows="4" placeholder="Una opción por línea&#10;Nombre en la portada&#10;Dedicatorias&#10;Selección de fotografías"></textarea><small>Añade una opción por línea.</small></label>
+          <label class="admin-field admin-field-wide"><span>Imagen de portada</span><input class="admin-file-input" name="coverImage" type="file" accept="image/png,image/jpeg,image/webp" disabled /><small>Se habilitará al configurar el almacenamiento de imágenes en R2.</small></label>
+          <label class="admin-field"><span>Estado de publicación</span><select name="status"><option value="draft">Borrador</option><option value="published">Publicado</option></select><small>Los borradores no se mostrarán en el catálogo.</small></label>
+          <label class="admin-checkbox-field"><input name="featured" type="checkbox" /><span><strong>Destacar en la página principal</strong><small>El producto podrá aparecer en la sección de destacados.</small></span></label>
+        </div>
+        <div class="admin-form-actions"><button class="admin-button-secondary" type="reset">Limpiar formulario</button><button class="admin-button-primary" type="submit">Guardar producto <span aria-hidden="true">↗</span></button></div>
+        <p class="admin-form-feedback" aria-live="polite" data-form-feedback></p>
+      </form>
+    </section>
+
+    <section class="admin-form-panel" id="panel-collections" role="tabpanel" aria-labelledby="tab-collections" data-admin-panel="collections" hidden>
+      <div class="admin-form-heading">
+        <div><span class="admin-form-kicker">Organización</span><h2>Nueva colección</h2><p>Agrupa productos por celebración, evento o temática.</p></div>
+        <span class="admin-required-note">Los campos con <b>*</b> son obligatorios</span>
+      </div>
+      <form class="admin-form" data-admin-form="Colección" data-content-type="collection">
+        <input type="hidden" name="id" />
+        <div class="admin-form-grid">
+          <label class="admin-field"><span>Nombre de la colección <b>*</b></span><input name="name" type="text" placeholder="Ej. Comunión" required maxlength="70" data-slug-source="collection" /><small>El nombre que aparecerá como título.</small></label>
+          <label class="admin-field"><span>Dirección web (slug)</span><input name="slugPreview" type="text" placeholder="Se genera al escribir el nombre" readonly aria-readonly="true" data-slug-target="collection" /><small>Se genera en el servidor y se añade un número si ya existe.</small></label>
+          <label class="admin-field admin-field-wide"><span>Frase destacada</span><input name="tagline" type="text" placeholder="Ej. Un día para recordar" maxlength="100" /><small>Una frase corta que acompañe el título de la colección.</small></label>
+          <label class="admin-field admin-field-wide"><span>Descripción breve <b>*</b></span><textarea name="summary" rows="3" maxlength="180" placeholder="Describe esta celebración en una o dos frases…" required></textarea><small>Se muestra en las tarjetas de colecciones.</small></label>
+          <label class="admin-field admin-field-wide"><span>Texto de presentación</span><textarea name="introduction" rows="5" placeholder="Presenta la ocasión y explica qué recuerdos puede reunir…"></textarea><small>Texto principal de la página de esta colección.</small></label>
+          <label class="admin-field admin-field-wide"><span>Ideas o recuerdos para incluir</span><textarea name="ideas" rows="5" placeholder="Una idea por línea&#10;Fotografías de la celebración&#10;Dedicatorias de familiares y amistades&#10;Detalles especiales del día"></textarea><small>Añade una idea por línea.</small></label>
+          <label class="admin-field admin-field-wide"><span>Frase de cierre</span><textarea name="closing" rows="3" placeholder="Una frase final que invite a descubrir los productos…"></textarea></label>
+          <label class="admin-field admin-field-wide"><span>Imagen de la colección</span><input class="admin-file-input" name="image" type="file" accept="image/png,image/jpeg,image/webp" disabled /><small>Se habilitará al configurar el almacenamiento de imágenes en R2.</small></label>
+          <label class="admin-field"><span>Estado de publicación</span><select name="status"><option value="draft">Borrador</option><option value="published">Publicado</option></select><small>Las colecciones pueden prepararse antes de hacerlas visibles.</small></label>
+        </div>
+        <div class="admin-form-actions"><button class="admin-button-secondary" type="reset">Limpiar formulario</button><button class="admin-button-primary" type="submit">Guardar colección <span aria-hidden="true">↗</span></button></div>
+        <p class="admin-form-feedback" aria-live="polite" data-form-feedback></p>
+      </form>
+    </section>
+
+    <section class="admin-form-panel admin-content-list" aria-labelledby="content-list-title">
+      <div class="admin-form-heading"><div><span class="admin-form-kicker">D1</span><h2 id="content-list-title">Contenido guardado</h2><p>Productos y colecciones registrados en la base de datos.</p></div></div>
+      <p class="admin-form-feedback" aria-live="polite" data-content-list>Conectando con la base de datos…</p>
+    </section>
+  </main>
+
+  <script>
+    const tabs = [...document.querySelectorAll<HTMLButtonElement>("[data-admin-tab]")];
+    const panels = [...document.querySelectorAll<HTMLElement>("[data-admin-panel]")];
+
+    function selectTab(name: string) {
+      tabs.forEach((tab) => {
+        const selected = tab.dataset.adminTab === name;
+        tab.classList.toggle("is-active", selected);
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.adminPanel !== name; });
+    }
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectTab(tab.dataset.adminTab ?? "products"));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          const step = event.key === "ArrowRight" ? 1 : -1;
+          const next = tabs[(index + step + tabs.length) % tabs.length];
+          next.focus();
+          selectTab(next.dataset.adminTab ?? "products");
+        }
+      });
+    });
+
+    document.querySelectorAll<HTMLInputElement>("[data-slug-source]").forEach((source) => {
+      const kind = source.dataset.slugSource;
+      const target = document.querySelector<HTMLInputElement>(`[data-slug-target="${kind}"]`);
+      if (!target) return;
+      source.addEventListener("input", () => {
+        if (source.closest<HTMLFormElement>("[data-admin-form]")?.dataset.editId) return;
+        target.value = source.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      });
+    });
+
+    const feedbackText = (form: HTMLFormElement, message: string, error = false) => {
+      const feedback = form.querySelector<HTMLElement>("[data-form-feedback]");
+      if (feedback) {
+        feedback.textContent = message;
+        feedback.style.color = error ? "#a34f49" : "";
+      }
+    };
+
+    const list = document.querySelector<HTMLElement>("[data-content-list]");
+    const collectionSelect = document.querySelector<HTMLSelectElement>('[data-content-type="product"] select[name="collection"]');
+    async function loadContent() {
+      try {
+        const response = await fetch("/api/admin/content", { headers: { Accept: "application/json" } });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "No se ha podido acceder al panel.");
+        if (collectionSelect) {
+          collectionSelect.innerHTML = '<option value="">Selecciona una colección</option>';
+          data.collections.forEach((item: { slug: string; name: string }) => {
+            const option = document.createElement("option");
+            option.value = item.slug;
+            option.textContent = item.name;
+            collectionSelect.append(option);
+          });
+        }
+        if (list) {
+          list.textContent = "";
+          if (!data.items.length) list.textContent = "Todavía no hay contenido guardado.";
+          data.items.forEach((item: Record<string, any>) => {
+            const row = document.createElement("div");
+            row.className = "admin-content-row";
+            const title = document.createElement("strong");
+            title.textContent = item.name;
+            const meta = document.createElement("span");
+            meta.textContent = `${item.type === "product" ? "Producto" : "Colección"} · /${item.slug} · ${item.status === "published" ? "Publicado" : "Borrador"}${item.collectionName ? ` · ${item.collectionName}` : ""}`;
+            const edit = document.createElement("button");
+            edit.type = "button";
+            edit.className = "admin-button-secondary";
+            edit.textContent = "Editar";
+            edit.addEventListener("click", () => {
+              const form = document.querySelector<HTMLFormElement>(`[data-content-type="${item.type}"]`);
+              if (!form) return;
+              form.dataset.editId = String(item.id);
+              form.querySelector<HTMLInputElement>('[name="id"]')!.value = String(item.id);
+              const set = (name: string, value: unknown) => {
+                const field = form.elements.namedItem(name);
+                if (field instanceof HTMLInputElement && field.type === "checkbox") field.checked = Boolean(value);
+                else if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) field.value = value == null ? "" : String(value);
+              };
+              set("name", item.name); set("summary", item.summary); set("status", item.status);
+              if (item.type === "collection") {
+                set("tagline", item.tagline); set("introduction", item.introduction); set("ideas", JSON.parse(item.ideasJson || "[]").join("\n")); set("closing", item.closing);
+              } else {
+                set("collection", item.collectionSlug); set("type", item.productType); set("description", item.description);
+                set("price", item.priceCents == null ? "" : (item.priceCents / 100).toFixed(2)); set("format", item.format);
+                set("pages", item.pages); set("coverText", item.coverText); set("options", JSON.parse(item.optionsJson || "[]").join("\n")); set("featured", item.featured);
+              }
+              const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+              if (submit) submit.innerHTML = 'Actualizar ' + (item.type === "product" ? "producto" : "colección") + ' <span aria-hidden="true">↗</span>';
+              selectTab(item.type === "product" ? "products" : "collections");
+              form.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+            row.append(title, meta, edit);
+            list.append(row);
+          });
+        }
+      } catch (error) {
+        if (list) list.textContent = error instanceof Error ? error.message : "No se pudo conectar con D1.";
+      }
+    }
+
+    document.querySelectorAll<HTMLFormElement>("[data-admin-form]").forEach((form) => {
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const fields = new FormData(form);
+        const lines = (key: string) => String(fields.get(key) ?? "").split("\n").map((line) => line.trim()).filter(Boolean);
+        const payload: Record<string, unknown> = {
+          type: form.dataset.contentType,
+          name: fields.get("name"),
+          summary: fields.get("summary"),
+          status: fields.get("status"),
+        };
+        const editId = fields.get("id");
+        if (editId) payload.id = Number(editId);
+        if (payload.type === "collection") Object.assign(payload, {
+          tagline: fields.get("tagline"), introduction: fields.get("introduction"), ideas: lines("ideas"), closing: fields.get("closing"),
+        });
+        if (payload.type === "product") Object.assign(payload, {
+          collection: fields.get("collection"), productType: fields.get("type"), description: fields.get("description"),
+          price: fields.get("price") ? Number(fields.get("price")) : null, format: fields.get("format"),
+          pages: fields.get("pages") ? Number(fields.get("pages")) : null, coverText: fields.get("coverText"),
+          options: lines("options"), featured: fields.has("featured"),
+        });
+        const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+        if (submit) submit.disabled = true;
+        feedbackText(form, "Guardando…");
+        try {
+          const response = await fetch("/api/admin/content", { method: editId ? "PUT" : "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "No se pudo guardar el contenido.");
+          feedbackText(form, `${editId ? "Actualizado" : "Guardado"} correctamente. Dirección: /${data.slug}`);
+          delete form.dataset.editId;
+          form.reset();
+          const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+          if (submitButton) submitButton.innerHTML = `Guardar ${form.dataset.contentType === "product" ? "producto" : "colección"} <span aria-hidden="true">↗</span>`;
+          await loadContent();
+        } catch (error) {
+          feedbackText(form, error instanceof Error ? error.message : "No se pudo guardar el contenido.", true);
+        } finally {
+          if (submit) submit.disabled = false;
+        }
+      });
+      form.addEventListener("reset", () => {
+        feedbackText(form, "");
+        delete form.dataset.editId;
+        const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+        if (submitButton) submitButton.innerHTML = `Guardar ${form.dataset.contentType === "product" ? "producto" : "colección"} <span aria-hidden="true">↗</span>`;
+      });
+    });
+
+    void loadContent();
+  </script>
+</AdminLayout>

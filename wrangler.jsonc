@@ -8,6 +8,13 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "trozos-con-alma",
+			"database_id": "c566f0d2-4254-4dfe-ab14-6c07f4045513"
+		}
+	],
 	"observability": {
 		"enabled": true
 	}

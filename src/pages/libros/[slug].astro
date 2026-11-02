@@ -4,6 +4,7 @@ import ProductCard from "../../components/ProductCard.astro";
 import { enlaceWhatsApp } from "../../data/contacto";
 import { colecciones } from "../../data/colecciones";
 import { productosDemo } from "../../data/productos-demo";
+export const prerender = true;
 
 export function getStaticPaths() {
   return productosDemo.map((producto) => ({
