@@ -1,7 +1,9 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"compatibility_date": "2026-10-23",
-	"compatibility_flags": ["global_fetch_strictly_public"],
+	"compatibility_flags": [
+		"global_fetch_strictly_public"
+	],
 	"name": "libros-eventos",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
@@ -15,7 +17,24 @@
 			"database_id": "c566f0d2-4254-4dfe-ab14-6c07f4045513"
 		}
 	],
+	"r2_buckets": [
+		{
+			"binding": "MEDIA",
+			"bucket_name": "trozos-con-alma-media"
+		}
+	],
 	"observability": {
 		"enabled": true
-	}
+	},
+	"vars": {
+		"R2_ACCOUNT_ID": "0f5075fa56936105727810c19eb62cdc",
+		"ACCESS_AUD": "da7b2f9a000a0cce1eb0761b12597d1c216714ae96a55ebbd50d0bec6efa5170",
+		"ACCESS_TEAM_DOMAIN": "purple-flower-2235.cloudflareaccess.com"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "82198519ce504761a00c365696135c34"
+		}
+	]
 }

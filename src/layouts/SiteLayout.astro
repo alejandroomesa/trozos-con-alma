@@ -76,5 +76,18 @@ const whatsappLink = enlaceWhatsApp("Hola, me gustaría consultar un libro perso
         <span>Libros hechos para volver a ellos.</span>
       </div>
     </footer>
+    <script is:inline>
+      const reportSiteEvent = (eventType) => {
+        const body = JSON.stringify({ eventType, path: window.location.pathname });
+        if (navigator.sendBeacon && navigator.sendBeacon("/api/analytics/event", new Blob([body], { type: "application/json" }))) return;
+        void fetch("/api/analytics/event", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+      };
+      reportSiteEvent("page_view");
+      document.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element)) return;
+        const link = event.target.closest("a[href]");
+        if (link instanceof HTMLAnchorElement && link.hostname === "wa.me") reportSiteEvent("whatsapp_click");
+      }, true);
+    </script>
   </body>
 </html>

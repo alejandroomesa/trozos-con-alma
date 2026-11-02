@@ -2,52 +2,54 @@
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import ProductCard from "../../components/ProductCard.astro";
 import { enlaceWhatsApp } from "../../data/contacto";
-import { colecciones } from "../../data/colecciones";
-import { productosDemo } from "../../data/productos-demo";
-export const prerender = true;
+import { getPublicCollections, getPublicProducts } from "../../lib/public-content";
+export const prerender = false;
 
-export function getStaticPaths() {
-  return productosDemo.map((producto) => ({
-    params: { slug: producto.slug },
-    props: {
-      producto,
-      coleccion: colecciones.find((item) => item.slug === producto.coleccion)!,
-    },
-  }));
-}
-
-const { producto, coleccion } = Astro.props;
+const { slug } = Astro.params;
+const [colecciones, productosPublicados] = await Promise.all([getPublicCollections(), getPublicProducts()]);
+const productoEncontrado = productosPublicados.find((item) => item.slug === slug);
+const producto = productoEncontrado ?? {
+  slug: slug ?? "", coleccion: "", destacado: false, nombre: "", tipo: "", resumen: "", descripcion: "",
+  precio: null, portada: "arena", formato: "", paginas: "", opciones: [], textoPortada: "", imageUrl: null, isDemo: false,
+};
+const coleccion = colecciones.find((item) => item.slug === producto.coleccion) ?? {
+  slug: "", nombre: "", resumen: "", etiqueta: "", introduccion: "", ideas: [], cierre: "", imageUrl: null, isDemo: false,
+};
+if (!productoEncontrado || !coleccion.nombre) Astro.response.status = 404;
 const whatsappLink = enlaceWhatsApp(`Hola, he visto el ejemplo «${producto.nombre}» y me gustaría consultar un libro personalizado.`);
-const otrosProductos = productosDemo.filter((item) => item.coleccion === producto.coleccion && item.slug !== producto.slug);
+const otrosProductos = productosPublicados.filter((item) => item.coleccion === producto.coleccion && item.slug !== producto.slug);
 ---
 
 <SiteLayout
   title={`${producto.nombre} · ${coleccion.nombre} · Trozos con Alma`}
-  description={`Vista de demostración de «${producto.nombre}», una idea ficticia para la colección de ${coleccion.nombre.toLowerCase()}.`}
+  description={producto.isDemo
+    ? `Vista de demostración de «${producto.nombre}», una idea ficticia para la colección de ${coleccion.nombre.toLowerCase()}.`
+    : `${producto.resumen} ${producto.descripcion}`}
 >
   <main id="contenido">
-    <div class="demo-page-banner"><span>VISTA DE DEMOSTRACIÓN</span> Este producto, sus opciones y su precio son ficticios y provisionales.</div>
+    {productoEncontrado && coleccion.nombre ? <>
+    {producto.isDemo && <div class="demo-page-banner"><span>VISTA DE DEMOSTRACION</span> Este producto y sus datos son ficticios y provisionales.</div>}
     <section class={`product-detail-hero product-cover-${producto.portada}`}>
       <div class="product-detail-inner">
-        <div class="product-detail-art" role="img" aria-label={`Portada ilustrada ficticia del libro ${producto.nombre}`}>
-          <span class="product-detail-art-note">EJEMPLO DE PORTADA</span>
+        <div class="product-detail-art" role="img" aria-label={`Portada del libro ${producto.nombre}`}>
+          <span class="product-detail-art-note">{producto.isDemo ? "EJEMPLO DE PORTADA" : "IDEA DE PORTADA"}</span>
+          {producto.imageUrl && <img class="product-detail-upload" src={producto.imageUrl} alt={`Portada de ${producto.nombre}`} />}
+          {!producto.imageUrl && <>
           <div class="product-cover product-cover-large">
             <span class="product-cover-mark" aria-hidden="true">ta</span>
             <span class="product-cover-flower" aria-hidden="true">✳</span>
             <span class="product-cover-title">{producto.textoPortada.split("\n").map((line) => <span>{line}</span>)}</span>
             <span class="product-cover-caption">TROZOS CON ALMA</span>
           </div>
+          </>}
         </div>
         <div class="product-detail-copy">
           <a class="back-link" href={`/colecciones/${coleccion.slug}/`}><span aria-hidden="true">←</span> Colección {coleccion.nombre}</a>
-          <p class="eyebrow">{producto.tipo} · Ejemplo ficticio</p>
+          <p class="eyebrow">{producto.tipo}{producto.isDemo ? " · Ejemplo ficticio" : ""}</p>
           <h1>{producto.nombre}</h1>
           <p class="product-detail-intro">{producto.resumen}</p>
-          <div class="demo-price-box">
-            <span>Precio de muestra</span>
-            <strong>{producto.precioDemo} €</strong>
-            <small>Importe inventado para mostrar el diseño. No es un precio real.</small>
-          </div>
+          {producto.descripcion && <p class="product-detail-intro">{producto.descripcion}</p>}
+          <div class="demo-price-box"><span>{producto.isDemo ? "Precio de muestra" : "Precio orientativo"}</span><strong>{producto.precio == null ? "Consultar" : `${producto.precio} €`}</strong><small>{producto.isDemo ? "Importe inventado para mostrar el diseño. No es un precio real." : producto.precio == null ? "Consulta el precio de este producto." : "El precio final se confirmará contigo antes del encargo."}</small></div>
           {whatsappLink && <a class="button button-primary" href={whatsappLink} target="_blank" rel="noreferrer">Consultar una idea parecida <span aria-hidden="true">↗</span></a>}
           <p class="no-purchase-note">La web no procesa pedidos ni pagos. La conversación y cualquier presupuesto se gestionan por WhatsApp.</p>
         </div>
@@ -58,12 +60,12 @@ const otrosProductos = productosDemo.filter((item) => item.coleccion === product
       <div class="product-specs-heading">
         <p class="eyebrow">Así se mostraría</p>
         <h2>Un punto de partida<br /><em>para imaginarlo.</em></h2>
-        <p>Los datos que ves aquí son parte de la demo. Más adelante bastará con sustituirlos por la información real de cada libro.</p>
+        <p>{producto.isDemo ? "Los datos que ves aquí son parte de la demo." : "Información del libro y sus opciones de personalización."}</p>
       </div>
       <div class="product-specs-grid">
-        <article class="spec-card"><span class="spec-number">01</span><span class="spec-label">Formato de ejemplo</span><strong>{producto.formatoDemo}</strong><p>Una medida provisional para probar la ficha.</p></article>
-        <article class="spec-card"><span class="spec-number">02</span><span class="spec-label">Extensión de ejemplo</span><strong>{producto.paginasDemo}</strong><p>La cantidad de páginas se definirá con el producto.</p></article>
-        <article class="spec-card"><span class="spec-number">03</span><span class="spec-label">Opciones posibles</span><div class="spec-options">{producto.opcionesDemo.map((opcion) => <span>{opcion}</span>)}</div><p>Son ideas, no características confirmadas.</p></article>
+        <article class="spec-card"><span class="spec-number">01</span><span class="spec-label">Formato</span><strong>{producto.formato || "A consultar"}</strong><p>Formato indicado para este producto.</p></article>
+        <article class="spec-card"><span class="spec-number">02</span><span class="spec-label">Extensión</span><strong>{producto.paginas || "A consultar"}</strong><p>Páginas indicadas para este producto.</p></article>
+        <article class="spec-card"><span class="spec-number">03</span><span class="spec-label">Opciones de personalización</span><div class="spec-options">{producto.opciones.map((opcion) => <span>{opcion}</span>)}</div><p>Las opciones disponibles se confirmarán contigo.</p></article>
       </div>
     </section>
 
@@ -83,8 +85,9 @@ const otrosProductos = productosDemo.filter((item) => item.coleccion === product
     </section>
 
     {otrosProductos.length > 0 && <section class="section other-products-section">
-      <p class="eyebrow">Más ideas de muestra</p>
+      <p class="eyebrow">Más libros de esta colección</p>
       <div class="product-grid">{otrosProductos.map((otro) => <ProductCard product={otro} />)}</div>
     </section>}
+    </> : <section class="section"><p class="eyebrow">Página no disponible</p><h1>No encontramos ese libro.</h1><a class="button button-primary" href="/#productos">Volver al catálogo</a></section>}
   </main>
 </SiteLayout>

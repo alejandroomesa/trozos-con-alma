@@ -2,20 +2,17 @@
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import ProductCard from "../../components/ProductCard.astro";
 import { enlaceWhatsApp } from "../../data/contacto";
-import { colecciones } from "../../data/colecciones";
-import { productosDemo } from "../../data/productos-demo";
-export const prerender = true;
+import { getPublicCollections, getPublicProducts } from "../../lib/public-content";
+export const prerender = false;
 
-export function getStaticPaths() {
-  return colecciones.map((coleccion) => ({
-    params: { slug: coleccion.slug },
-    props: { coleccion },
-  }));
-}
-
-const { coleccion } = Astro.props;
+const { slug } = Astro.params;
+const [colecciones, productosPublicados] = await Promise.all([getPublicCollections(), getPublicProducts()]);
+const coleccion = colecciones.find((item) => item.slug === slug) ?? {
+  slug: slug ?? "", nombre: "", resumen: "", etiqueta: "", introduccion: "", ideas: [], cierre: "", imageUrl: null, isDemo: false,
+};
+if (!coleccion.nombre) Astro.response.status = 404;
 const whatsappLink = enlaceWhatsApp(`Hola, me gustaría consultar un libro para ${coleccion.nombre.toLowerCase()}.`);
-const productos = productosDemo.filter((producto) => producto.coleccion === coleccion.slug);
+const productos = productosPublicados.filter((producto) => producto.coleccion === coleccion.slug);
 ---
 
 <SiteLayout
@@ -23,6 +20,7 @@ const productos = productosDemo.filter((producto) => producto.coleccion === cole
   description={`${coleccion.resumen} Descubre ideas para un libro personalizado de ${coleccion.nombre.toLowerCase()}.`}
 >
   <main id="contenido">
+    {coleccion.nombre ? <>
     <section class={`detail-hero detail-hero-${coleccion.slug}`}>
       <div class="detail-hero-inner">
         <div class="detail-copy">
@@ -34,10 +32,13 @@ const productos = productosDemo.filter((producto) => producto.coleccion === cole
           {whatsappLink && <a class="button button-primary" href={whatsappLink} target="_blank" rel="noreferrer">Consultar por WhatsApp <span aria-hidden="true">↗</span></a>}
         </div>
         <div class="detail-illustration" aria-hidden="true">
+          {coleccion.imageUrl && <img class="collection-detail-upload" src={coleccion.imageUrl} alt="" />}
+          {!coleccion.imageUrl && <>
           <span class="detail-stamp">T<br />A</span>
           <span class="detail-motif">{coleccion.slug === "boda" ? "∞" : coleccion.slug === "bautizo" ? "❋" : "✳"}</span>
           <span class="detail-motif-caption">UNA HISTORIA<br />PARA CONSERVAR</span>
           <span class="detail-leaf leaf-one">⌁</span><span class="detail-leaf leaf-two">✳</span>
+          </>}
         </div>
       </div>
     </section>
@@ -62,12 +63,13 @@ const productos = productosDemo.filter((producto) => producto.coleccion === cole
             <p class="eyebrow">Modelos para inspirarte</p>
             <h2>Algunas ideas<br /><em>para tu libro.</em></h2>
           </div>
-          <p>Estos ejemplos enseñan cómo aparecerán los libros de esta colección. Las opciones finales se definirán contigo.</p>
+          <p>Descubre los libros disponibles para esta colección. Las opciones finales se definirán contigo.</p>
         </div>
-        <div class="demo-notice"><span>PRODUCTOS DE MUESTRA</span> Todos los nombres, detalles y precios de esta página son ficticios y provisionales.</div>
+        {productos.some((producto) => producto.isDemo) && <div class="demo-notice"><span>PRODUCTOS DE MUESTRA</span> Los productos marcados como ejemplo son ficticios y provisionales.</div>}
         <div class="product-grid">
           {productos.map((producto) => <ProductCard product={producto} />)}
         </div>
+        {productos.length === 0 && <p class="collection-footnote">Estamos preparando los libros de esta colección. Consúltanos por WhatsApp si tienes una idea.</p>}
       </div>
     </section>
 
@@ -87,5 +89,6 @@ const productos = productosDemo.filter((producto) => producto.coleccion === cole
         <div>{colecciones.filter((otra) => otra.slug !== coleccion.slug).map((otra) => <a href={`/colecciones/${otra.slug}/`}>{otra.nombre} <span aria-hidden="true">↗</span></a>)}</div>
       </div>
     </nav>
+    </> : <section class="section"><p class="eyebrow">Página no disponible</p><h1>No encontramos esa colección.</h1><a class="button button-primary" href="/#colecciones">Volver a las colecciones</a></section>}
   </main>
 </SiteLayout>

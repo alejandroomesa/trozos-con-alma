@@ -26,6 +26,7 @@ type Payload = {
   options?: string[];
   featured?: boolean;
   id?: number;
+  imageKey?: string | null;
 };
 
 const jwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
@@ -73,7 +74,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
   const bindings = env as Env;
   if (!(await authorized(request, bindings))) return json({ error: 'Acceso no autorizado. Configura Cloudflare Access para el panel.' }, 401);
   const rows = await bindings.DB.prepare(
-    `SELECT c.id, c.slug, c.content_type AS type, c.title AS name, c.summary, c.status,
+    `SELECT c.id, c.slug, c.content_type AS type, c.title AS name, c.summary, c.status, c.image_key AS imageKey,
       c.created_at AS createdAt, p.product_type AS productType, p.price_cents AS priceCents,
       p.featured, p.description, p.book_format AS format, p.page_count AS pages,
       p.cover_text AS coverText, p.options_json AS optionsJson, co.slug AS collectionSlug,
@@ -86,7 +87,13 @@ export const GET: APIRoute = async ({ request, locals }) => {
   const dbCollections = await bindings.DB.prepare(
     `SELECT c.slug, c.title AS name FROM content c WHERE c.content_type = 'collection' ORDER BY c.title`
   ).all();
-  return json({ items: rows.results, collections: dbCollections.results });
+  const analytics = await bindings.DB.prepare(
+    `SELECT event_date AS date, event_type AS type, event_count AS count
+     FROM analytics_daily
+     WHERE event_date >= date('now', 'start of month')
+     ORDER BY event_date`
+  ).all();
+  return json({ items: rows.results, collections: dbCollections.results, analytics: analytics.results });
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -111,9 +118,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     if (reserved.has(slug)) continue;
     const nowPublished = payload.status === 'published' ? new Date().toISOString() : null;
     const inserted = await bindings.DB.prepare(
-      `INSERT INTO content (slug, content_type, title, summary, status, published_at)
-       VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(slug) DO NOTHING RETURNING id`
-    ).bind(slug, type, name, payload.summary!.trim(), payload.status, nowPublished).first<{ id: number }>();
+      `INSERT INTO content (slug, content_type, title, summary, status, published_at, image_key)
+       VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(slug) DO NOTHING RETURNING id`
+    ).bind(slug, type, name, payload.summary!.trim(), payload.status, nowPublished, payload.imageKey || null).first<{ id: number }>();
     if (!inserted) continue;
 
     try {
@@ -165,10 +172,10 @@ export const PUT: APIRoute = async ({ request }) => {
   if (type === 'product' && !collection) return json({ error: 'La colección seleccionada no existe todavía en el panel.' }, 400);
 
   const statements = [bindings.DB.prepare(
-    `UPDATE content SET title = ?, summary = ?, status = ?,
+    `UPDATE content SET title = ?, summary = ?, status = ?, image_key = ?,
       published_at = CASE WHEN ? = 'published' THEN COALESCE(published_at, CURRENT_TIMESTAMP) ELSE NULL END,
       updated_at = CURRENT_TIMESTAMP WHERE id = ?`
-  ).bind(payload.name!.trim(), payload.summary!.trim(), status, status, id)];
+  ).bind(payload.name!.trim(), payload.summary!.trim(), status, payload.imageKey || null, status, id)];
   if (type === 'collection') {
     statements.push(bindings.DB.prepare(
       `UPDATE collections SET tagline = ?, introduction = ?, ideas_json = ?, closing = ? WHERE content_id = ?`
@@ -181,4 +188,25 @@ export const PUT: APIRoute = async ({ request }) => {
   await bindings.DB.batch(statements);
   const saved = await bindings.DB.prepare('SELECT slug FROM content WHERE id = ?').bind(id).first<{ slug: string }>();
   return json({ ok: true, id, slug: saved?.slug });
+};
+
+export const DELETE: APIRoute = async ({ request }) => {
+  const bindings = env as Env;
+  if (!(await authorized(request, bindings))) return json({ error: 'Acceso no autorizado.' }, 401);
+  let payload: { id?: number };
+  try { payload = await request.json() as { id?: number }; }
+  catch { return json({ error: 'La petición no es válida.' }, 400); }
+  if (!Number.isInteger(payload.id) || payload.id! < 1) return json({ error: 'El registro que quieres eliminar no es válido.' }, 400);
+  const id = payload.id!;
+  const item = await bindings.DB.prepare('SELECT id, content_type AS type, image_key AS imageKey FROM content WHERE id = ?').bind(id).first<{ id: number; type: string; imageKey: string | null }>();
+  if (!item) return json({ error: 'No se ha encontrado el contenido.' }, 404);
+  if (item.type === 'collection') {
+    const linked = await bindings.DB.prepare('SELECT COUNT(*) AS total FROM products WHERE collection_id = ?').bind(id).first<{ total: number }>();
+    if ((linked?.total ?? 0) > 0) return json({ error: 'No puedes eliminar esta colección mientras tenga productos asociados. Cambia primero esos productos a otra colección.' }, 409);
+  }
+  await bindings.DB.prepare('DELETE FROM content WHERE id = ?').bind(id).run();
+  if (item.imageKey && (env as Env).MEDIA) {
+    try { await (env as Env).MEDIA.delete(item.imageKey); } catch (cause) { console.error('Could not delete image from R2', cause); }
+  }
+  return json({ ok: true });
 };

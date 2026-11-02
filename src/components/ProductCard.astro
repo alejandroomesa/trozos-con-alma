@@ -1,8 +1,8 @@
 ---
-import { productosDemo } from "../data/productos-demo";
+import type { PublicProduct } from "../lib/public-content";
 
 interface Props {
-  product: (typeof productosDemo)[number];
+  product: PublicProduct;
 }
 
 const { product } = Astro.props;
@@ -11,19 +11,22 @@ const { product } = Astro.props;
 <article class={`product-card product-cover-${product.portada}`}>
   <a href={`/libros/${product.slug}/`} aria-label={`Ver ejemplo de producto: ${product.nombre}`}>
     <div class="product-cover" role="img" aria-label={`Portada ilustrada de muestra: ${product.nombre}`}>
+      {product.imageUrl && <img class="product-cover-upload" src={product.imageUrl} alt={`Portada de ${product.nombre}`} loading="lazy" />}
+      {!product.imageUrl && <>
       <span class="product-cover-mark" aria-hidden="true">ta</span>
       <span class="product-cover-flower" aria-hidden="true">✳</span>
       <span class="product-cover-title">
         {product.textoPortada.split("\n").map((line) => <span>{line}</span>)}
       </span>
       <span class="product-cover-caption">TROZOS CON ALMA</span>
+      </>}
     </div>
     <div class="product-card-copy">
       <span class="product-type">{product.tipo}</span>
       <h3>{product.nombre}</h3>
       <p>{product.resumen}</p>
       <div class="product-card-meta">
-        <span class="product-demo-price">Ejemplo: {product.precioDemo} €</span>
+        <span class="product-demo-price">{product.isDemo ? `Ejemplo: ${product.precio} €` : product.precio == null ? "Consultar precio" : `${product.precio} €`}</span>
         <span class="product-arrow" aria-hidden="true">↗</span>
       </div>
     </div>

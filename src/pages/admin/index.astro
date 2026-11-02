@@ -4,31 +4,54 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 <AdminLayout title="Administración · Trozos con Alma">
   <main id="contenido" class="admin-shell">
-    <div class="admin-breadcrumb"><span>Panel</span><span aria-hidden="true">/</span><span>Contenido</span></div>
-    <div class="admin-heading-row">
-      <div>
-        <p class="eyebrow">Tu espacio de trabajo</p>
-        <h1>Gestiona tu <em>contenido.</em></h1>
-        <p class="admin-lede">Organiza los libros y las historias que aparecen en Trozos con Alma.</p>
-      </div>
-      <span class="admin-prototype-badge"><i></i> Panel conectado</span>
-    </div>
+    <nav class="admin-navigation" aria-label="Administración">
+      <button class="is-active" type="button" data-admin-view-target="dashboard">Dashboard</button>
+      <button type="button" data-admin-view-target="content">Productos y colecciones</button>
+    </nav>
+    <section class="admin-view admin-dashboard" data-admin-view="dashboard">
+      <div class="admin-heading-row"><div><p class="eyebrow">Tu espacio de trabajo</p><h1>Hola, bienvenida a <em>tu panel.</em></h1><p class="admin-lede">Desde aquí puedes organizar el catálogo y las ocasiones que aparecen en tu web.</p></div><span class="admin-prototype-badge"><i></i> D1 conectado</span></div>
+      <section class="admin-overview-grid" aria-label="Resumen del negocio">
+        <article class="admin-overview-card">
+          <p class="admin-form-kicker">Catálogo</p><h2>Productos</h2><strong class="admin-overview-value" data-stat-products>—</strong>
+          <p class="admin-overview-detail" data-stat-products-detail>Libros en el catálogo</p>
+          <button class="admin-button-primary" type="button" data-admin-create="product">Nuevo producto <span aria-hidden="true">↗</span></button>
+        </article>
+        <article class="admin-overview-card">
+          <p class="admin-form-kicker">Organización</p><h2>Colecciones</h2><strong class="admin-overview-value" data-stat-collections>—</strong>
+          <p class="admin-overview-detail" data-stat-collections-detail>Ocasiones y eventos</p>
+          <button class="admin-button-primary" type="button" data-admin-create="collection">Nueva colección <span aria-hidden="true">↗</span></button>
+        </article>
+        <article class="admin-overview-card">
+          <p class="admin-form-kicker">Contacto</p><h2>Clics a WhatsApp</h2><strong class="admin-overview-value" data-stat-whatsapp-clicks>—</strong>
+          <p class="admin-overview-detail">Este mes · clics para iniciar una conversación</p>
+        </article>
+        <article class="admin-overview-card admin-heatmap-card">
+          <div class="admin-heatmap-heading"><div><p class="admin-form-kicker">Actividad de la web</p><h2>Mapa de visitas</h2></div><span data-heatmap-month>Este mes</span></div>
+          <p class="admin-overview-detail">Visitas diarias · datos agregados y anónimos</p>
+          <div class="admin-heatmap-weekdays" aria-hidden="true"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+          <div class="admin-heatmap-grid" data-heatmap role="img" aria-label="Mapa de calor de visitas diarias"></div>
+          <div class="admin-heatmap-legend"><span>Menos</span><i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i><span>Más</span></div>
+        </article>
+      </section>
+      <section class="admin-recent"><div><div><p class="admin-form-kicker">Contenido reciente</p><h2>Tu catálogo</h2></div><button class="admin-button-secondary" type="button" data-admin-view-target="content">Ver todos</button></div><div data-dashboard-recent>Conectando con la base de datos…</div></section>
+      <section class="admin-r2-usage" aria-labelledby="r2-usage-title">
+        <div class="admin-r2-heading"><div><p class="admin-form-kicker">Almacenamiento</p><h2 id="r2-usage-title">Uso de Cloudflare R2</h2><p>Seguimiento de este mes frente a los límites gratuitos del almacenamiento Standard.</p></div><span class="admin-r2-status" data-r2-status>Conectando…</span></div>
+        <div class="admin-r2-alert" data-r2-alert role="status" aria-live="polite">Consultando métricas de Cloudflare…</div>
+        <div class="admin-r2-metrics" data-r2-metrics hidden>
+          <article><div><span>Almacenamiento actual</span><strong data-r2-storage-value>—</strong></div><div class="admin-r2-track"><span data-r2-storage-bar></span></div><small>Referencia gratuita: 10 GB · ocupación actual como margen preventivo</small></article>
+          <article><div><span>Operaciones clase A</span><strong data-r2-a-value>—</strong></div><div class="admin-r2-track"><span data-r2-a-bar></span></div><small>Referencia gratuita: 1 millón al mes</small></article>
+          <article><div><span>Operaciones clase B</span><strong data-r2-b-value>—</strong></div><div class="admin-r2-track"><span data-r2-b-bar></span></div><small>Referencia gratuita: 10 millones al mes</small></article>
+        </div>
+        <div class="admin-r2-chart-wrap" data-r2-chart-wrap hidden>
+          <div class="admin-r2-chart-title"><strong>Progreso diario hacia los límites</strong><span data-r2-updated>—</span></div>
+          <svg class="admin-r2-chart" data-r2-chart viewBox="0 0 720 230" role="img" aria-label="Gráfica de uso porcentual de R2 en el mes actual"></svg>
+          <div class="admin-r2-legend"><span><i class="admin-r2-key-a"></i>Clase A</span><span><i class="admin-r2-key-b"></i>Clase B</span><span><i class="admin-r2-key-storage"></i>Almacenamiento</span><span><i class="admin-r2-key-alert"></i>Avisos 70 %, 85 % y 100 %</span></div>
+        </div>
+        <p class="admin-r2-footnote">Se actualiza al abrir el panel y cada 15 minutos mientras permanezca abierto. Las métricas de Cloudflare pueden retrasarse; este aviso sirve de referencia y no detiene automáticamente el servicio ni garantiza que no haya cargos. La gráfica de almacenamiento compara la ocupación actual con 10 GB; Cloudflare factura almacenamiento según GB-mes.</p>
+      </section>
+    </section>
 
-    <div class="admin-prototype-note" role="note">
-      <span class="admin-note-icon" aria-hidden="true">i</span>
-      <p><strong>Guardado en D1 listo.</strong> Los slugs se generan en el servidor y la base de datos impide duplicados. Antes de abrir el panel al cliente, configura Cloudflare Access y sus variables de validación. Las imágenes se conectarán al configurar R2.</p>
-    </div>
-
-    <div class="admin-tabs" role="tablist" aria-label="Tipo de contenido">
-      <button class="admin-tab is-active" id="tab-products" type="button" role="tab" aria-selected="true" aria-controls="panel-products" data-admin-tab="products">
-        <span class="admin-tab-icon" aria-hidden="true">▤</span><span>Productos</span><small>Libros y álbumes</small>
-      </button>
-      <button class="admin-tab" id="tab-collections" type="button" role="tab" aria-selected="false" aria-controls="panel-collections" data-admin-tab="collections" tabindex="-1">
-        <span class="admin-tab-icon" aria-hidden="true">✳</span><span>Colecciones</span><small>Ocasiones y eventos</small>
-      </button>
-    </div>
-
-    <section class="admin-form-panel" id="panel-products" role="tabpanel" aria-labelledby="tab-products" data-admin-panel="products">
+    <section class="admin-form-panel admin-view" id="panel-products" data-admin-view="products" hidden>
       <div class="admin-form-heading">
         <div><span class="admin-form-kicker">Catálogo</span><h2>Nuevo producto</h2><p>Completa la información del libro que quieres mostrar.</p></div>
         <span class="admin-required-note">Los campos con <b>*</b> son obligatorios</span>
@@ -47,7 +70,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <label class="admin-field"><span>Número de páginas</span><input name="pages" type="number" min="1" step="1" placeholder="Ej. 36" /></label>
           <label class="admin-field"><span>Texto de portada</span><input name="coverText" type="text" placeholder="Ej. Un día para siempre" maxlength="70" /><small>Texto que aparecerá en la portada de muestra.</small></label>
           <label class="admin-field admin-field-wide"><span>Opciones de personalización</span><textarea name="options" rows="4" placeholder="Una opción por línea&#10;Nombre en la portada&#10;Dedicatorias&#10;Selección de fotografías"></textarea><small>Añade una opción por línea.</small></label>
-          <label class="admin-field admin-field-wide"><span>Imagen de portada</span><input class="admin-file-input" name="coverImage" type="file" accept="image/png,image/jpeg,image/webp" disabled /><small>Se habilitará al configurar el almacenamiento de imágenes en R2.</small></label>
+          <input type="hidden" name="imageKey" /><label class="admin-field admin-field-wide"><span>Imagen de portada</span><input class="admin-file-input" name="coverImage" type="file" accept="image/png,image/jpeg,image/webp" /><small>JPG, PNG o WebP, hasta 8 MB.</small><img class="admin-image-preview" data-image-preview hidden alt="Vista previa de imagen" /></label>
           <label class="admin-field"><span>Estado de publicación</span><select name="status"><option value="draft">Borrador</option><option value="published">Publicado</option></select><small>Los borradores no se mostrarán en el catálogo.</small></label>
           <label class="admin-checkbox-field"><input name="featured" type="checkbox" /><span><strong>Destacar en la página principal</strong><small>El producto podrá aparecer en la sección de destacados.</small></span></label>
         </div>
@@ -56,7 +79,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       </form>
     </section>
 
-    <section class="admin-form-panel" id="panel-collections" role="tabpanel" aria-labelledby="tab-collections" data-admin-panel="collections" hidden>
+    <section class="admin-form-panel admin-view" id="panel-collections" data-admin-view="collections" hidden>
       <div class="admin-form-heading">
         <div><span class="admin-form-kicker">Organización</span><h2>Nueva colección</h2><p>Agrupa productos por celebración, evento o temática.</p></div>
         <span class="admin-required-note">Los campos con <b>*</b> son obligatorios</span>
@@ -71,7 +94,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <label class="admin-field admin-field-wide"><span>Texto de presentación</span><textarea name="introduction" rows="5" placeholder="Presenta la ocasión y explica qué recuerdos puede reunir…"></textarea><small>Texto principal de la página de esta colección.</small></label>
           <label class="admin-field admin-field-wide"><span>Ideas o recuerdos para incluir</span><textarea name="ideas" rows="5" placeholder="Una idea por línea&#10;Fotografías de la celebración&#10;Dedicatorias de familiares y amistades&#10;Detalles especiales del día"></textarea><small>Añade una idea por línea.</small></label>
           <label class="admin-field admin-field-wide"><span>Frase de cierre</span><textarea name="closing" rows="3" placeholder="Una frase final que invite a descubrir los productos…"></textarea></label>
-          <label class="admin-field admin-field-wide"><span>Imagen de la colección</span><input class="admin-file-input" name="image" type="file" accept="image/png,image/jpeg,image/webp" disabled /><small>Se habilitará al configurar el almacenamiento de imágenes en R2.</small></label>
+          <input type="hidden" name="imageKey" /><label class="admin-field admin-field-wide"><span>Imagen de la colección</span><input class="admin-file-input" name="image" type="file" accept="image/png,image/jpeg,image/webp" /><small>JPG, PNG o WebP, hasta 8 MB.</small><img class="admin-image-preview" data-image-preview hidden alt="Vista previa de imagen" /></label>
           <label class="admin-field"><span>Estado de publicación</span><select name="status"><option value="draft">Borrador</option><option value="published">Publicado</option></select><small>Las colecciones pueden prepararse antes de hacerlas visibles.</small></label>
         </div>
         <div class="admin-form-actions"><button class="admin-button-secondary" type="reset">Limpiar formulario</button><button class="admin-button-primary" type="submit">Guardar colección <span aria-hidden="true">↗</span></button></div>
@@ -79,42 +102,67 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       </form>
     </section>
 
-    <section class="admin-form-panel admin-content-list" aria-labelledby="content-list-title">
-      <div class="admin-form-heading"><div><span class="admin-form-kicker">D1</span><h2 id="content-list-title">Contenido guardado</h2><p>Productos y colecciones registrados en la base de datos.</p></div></div>
-      <p class="admin-form-feedback" aria-live="polite" data-content-list>Conectando con la base de datos…</p>
+    <section class="admin-form-panel admin-content-list admin-view" data-admin-view="content" hidden>
+      <div class="admin-form-heading"><div><span class="admin-form-kicker">D1</span><h2 id="content-list-title">Productos y colecciones</h2><p>Busca, edita, publica o elimina el contenido de tu web.</p></div><button class="admin-button-secondary" type="button" data-admin-view-target="dashboard">Volver al dashboard</button></div>
+      <div class="admin-list-toolbar"><input type="search" placeholder="Buscar por nombre o slug" aria-label="Buscar contenido" data-content-search /><div><button class="admin-filter is-active" type="button" data-content-filter="all">Todo</button><button class="admin-filter" type="button" data-content-filter="product">Productos</button><button class="admin-filter" type="button" data-content-filter="collection">Colecciones</button></div></div><div data-content-list aria-live="polite">Conectando con la base de datos…</div>
     </section>
   </main>
 
   <script>
-    const tabs = [...document.querySelectorAll<HTMLButtonElement>("[data-admin-tab]")];
-    const panels = [...document.querySelectorAll<HTMLElement>("[data-admin-panel]")];
+    const viewButtons = [...document.querySelectorAll<HTMLButtonElement>("[data-admin-view-target]")];
+    const views = [...document.querySelectorAll<HTMLElement>("[data-admin-view]")];
+    let contentItems: Record<string, any>[] = [];
+    let contentFilter = "all";
+    const list = document.querySelector<HTMLElement>("[data-content-list]");
+    const recent = document.querySelector<HTMLElement>("[data-dashboard-recent]");
+    const collectionSelect = document.querySelector<HTMLSelectElement>('[data-content-type="product"] select[name="collection"]');
+    const search = document.querySelector<HTMLInputElement>("[data-content-search]");
+    const heatmap = document.querySelector<HTMLElement>("[data-heatmap]");
+    const whatsappClicks = document.querySelector<HTMLElement>("[data-stat-whatsapp-clicks]");
+    const heatmapMonth = document.querySelector<HTMLElement>("[data-heatmap-month]");
 
-    function selectTab(name: string) {
-      tabs.forEach((tab) => {
-        const selected = tab.dataset.adminTab === name;
-        tab.classList.toggle("is-active", selected);
-        tab.setAttribute("aria-selected", String(selected));
-        tab.tabIndex = selected ? 0 : -1;
+    function renderHeatmap(rows: Array<{ date: string; type: string; count: number }>) {
+      if (!heatmap) return;
+      const now = new Date();
+      const year = now.getUTCFullYear();
+      const month = now.getUTCMonth();
+      const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+      const firstWeekday = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7;
+      const visits = new Map(rows.filter((row) => row.type === "page_view").map((row) => [row.date, Number(row.count)]));
+      const values = Array.from({ length: daysInMonth }, (_, index) => visits.get(`${year}-${String(month + 1).padStart(2, "0")}-${String(index + 1).padStart(2, "0")}`) ?? 0);
+      const maxVisits = Math.max(0, ...values);
+      heatmap.replaceChildren();
+      for (let index = 0; index < firstWeekday; index += 1) { const blank = document.createElement("span"); blank.className = "admin-heatmap-day is-empty"; blank.setAttribute("aria-hidden", "true"); heatmap.append(blank); }
+      values.forEach((count, index) => {
+        const day = index + 1;
+        const cell = document.createElement("span");
+        cell.className = "admin-heatmap-day";
+        const level = count === 0 ? 0 : Math.max(1, Math.ceil(count / maxVisits * 4));
+        cell.dataset.level = String(Math.min(4, level));
+        cell.title = `${day} ${new Intl.DateTimeFormat("es-ES", { month: "long", timeZone: "UTC" }).format(now)}: ${count} ${count === 1 ? "visita" : "visitas"}`;
+        cell.setAttribute("aria-label", cell.title);
+        cell.textContent = String(day);
+        heatmap.append(cell);
       });
-      panels.forEach((panel) => { panel.hidden = panel.dataset.adminPanel !== name; });
+      heatmapMonth && (heatmapMonth.textContent = new Intl.DateTimeFormat("es-ES", { month: "long", year: "numeric", timeZone: "UTC" }).format(now));
     }
 
-    tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => selectTab(tab.dataset.adminTab ?? "products"));
-      tab.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-          event.preventDefault();
-          const step = event.key === "ArrowRight" ? 1 : -1;
-          const next = tabs[(index + step + tabs.length) % tabs.length];
-          next.focus();
-          selectTab(next.dataset.adminTab ?? "products");
-        }
-      });
-    });
+    function showView(name: string) {
+      views.forEach((view) => { view.hidden = view.dataset.adminView !== name; });
+      viewButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.adminViewTarget === name));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    viewButtons.forEach((button) => button.addEventListener("click", () => showView(button.dataset.adminViewTarget ?? "dashboard")));
+    document.querySelectorAll<HTMLButtonElement>("[data-admin-create]").forEach((button) => button.addEventListener("click", () => {
+      const type = button.dataset.adminCreate === "product" ? "product" : "collection";
+      const form = document.querySelector<HTMLFormElement>(`[data-content-type="${type}"]`);
+      form?.reset();
+      showView(type === "product" ? "products" : "collections");
+      document.querySelector(`[data-content-type="${type}"] [name="name"]`)?.focus();
+    }));
 
     document.querySelectorAll<HTMLInputElement>("[data-slug-source]").forEach((source) => {
-      const kind = source.dataset.slugSource;
-      const target = document.querySelector<HTMLInputElement>(`[data-slug-target="${kind}"]`);
+      const target = document.querySelector<HTMLInputElement>(`[data-slug-target="${source.dataset.slugSource}"]`);
       if (!target) return;
       source.addEventListener("input", () => {
         if (source.closest<HTMLFormElement>("[data-admin-form]")?.dataset.editId) return;
@@ -124,123 +172,260 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     const feedbackText = (form: HTMLFormElement, message: string, error = false) => {
       const feedback = form.querySelector<HTMLElement>("[data-form-feedback]");
-      if (feedback) {
-        feedback.textContent = message;
-        feedback.style.color = error ? "#a34f49" : "";
-      }
+      if (feedback) { feedback.textContent = message; feedback.style.color = error ? "#a34f49" : ""; }
+    };
+    function showApiAccessHelp(container: HTMLElement) {
+      container.replaceChildren(document.createTextNode("Cloudflare Access necesita autorizar la API. "));
+      const link = document.createElement("a"); link.href = "/api/admin/content"; link.target = "_blank"; link.rel = "noreferrer";
+      link.textContent = "Abre este enlace, completa el acceso si te lo pide y vuelve a reintentar.";
+      container.append(link);
+    }
+    const setField = (form: HTMLFormElement, name: string, value: unknown) => {
+      const field = form.elements.namedItem(name);
+      if (field instanceof HTMLInputElement && field.type === "checkbox") field.checked = Boolean(value);
+      else if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) field.value = value == null ? "" : String(value);
     };
 
-    const list = document.querySelector<HTMLElement>("[data-content-list]");
-    const collectionSelect = document.querySelector<HTMLSelectElement>('[data-content-type="product"] select[name="collection"]');
+    function itemRow(item: Record<string, any>, compact = false) {
+      const row = document.createElement("article");
+      row.className = `admin-content-row${compact ? " is-compact" : ""}`;
+      row.dataset.type = item.type;
+      row.dataset.search = `${item.name} ${item.slug}`.toLowerCase();
+      if (item.imageKey) {
+        const image = document.createElement("img"); image.className = "admin-row-image"; image.src = `/media/${item.imageKey}`; image.alt = ""; row.append(image);
+      }
+      const copy = document.createElement("div"); copy.className = "admin-row-copy";
+      const title = document.createElement("strong"); title.textContent = item.name;
+      const meta = document.createElement("span");
+      const publicPath = item.type === "product" ? `/libros/${item.slug}/` : `/colecciones/${item.slug}/`;
+      meta.textContent = `${item.type === "product" ? "Producto" : "Colección"} · ${publicPath} · ${item.status === "published" ? "Publicado" : "Borrador"}${item.collectionName ? ` · ${item.collectionName}` : ""}`;
+      copy.append(title, meta);
+      const actions = document.createElement("div"); actions.className = "admin-row-actions";
+      if (item.status === "published") {
+        const preview = document.createElement("a"); preview.className = "admin-button-secondary"; preview.textContent = "Ver"; preview.href = publicPath; preview.target = "_blank"; preview.rel = "noreferrer"; actions.append(preview);
+      }
+      const edit = document.createElement("button"); edit.type = "button"; edit.className = "admin-button-secondary"; edit.textContent = "Editar";
+      edit.addEventListener("click", () => {
+        const form = document.querySelector<HTMLFormElement>(`[data-content-type="${item.type}"]`);
+        if (!form) return;
+        form.reset(); form.dataset.editId = String(item.id); form.dataset.originalImageKey = item.imageKey ?? "";
+        setField(form, "id", item.id); setField(form, "name", item.name); setField(form, "summary", item.summary); setField(form, "status", item.status); setField(form, "imageKey", item.imageKey);
+        if (item.type === "collection") {
+          setField(form, "tagline", item.tagline); setField(form, "introduction", item.introduction); setField(form, "ideas", JSON.parse(item.ideasJson || "[]").join("\n")); setField(form, "closing", item.closing);
+        } else {
+          setField(form, "collection", item.collectionSlug); setField(form, "type", item.productType); setField(form, "description", item.description);
+          setField(form, "price", item.priceCents == null ? "" : (item.priceCents / 100).toFixed(2)); setField(form, "format", item.format); setField(form, "pages", item.pages);
+          setField(form, "coverText", item.coverText); setField(form, "options", JSON.parse(item.optionsJson || "[]").join("\n")); setField(form, "featured", item.featured);
+        }
+        const preview = form.querySelector<HTMLImageElement>("[data-image-preview]");
+        if (preview && item.imageKey) { preview.src = `/media/${item.imageKey}`; preview.hidden = false; }
+        const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+        if (submit) submit.textContent = `Actualizar ${item.type === "product" ? "producto" : "colección"}`;
+        showView(item.type === "product" ? "products" : "collections");
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      const remove = document.createElement("button"); remove.type = "button"; remove.className = "admin-button-danger"; remove.textContent = "Eliminar";
+      remove.addEventListener("click", async () => {
+        if (!window.confirm(`¿Eliminar “${item.name}”? Esta acción no se puede deshacer.`)) return;
+        remove.disabled = true;
+        try {
+          const response = await fetch("/api/admin/content", { method: "DELETE", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ id: item.id }) });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "No se pudo eliminar el contenido.");
+          await loadContent();
+        } catch (error) { window.alert(error instanceof Error ? error.message : "No se pudo eliminar el contenido."); remove.disabled = false; }
+      });
+      actions.append(edit, remove); row.append(copy, actions); return row;
+    }
+
+    function renderItems() {
+      const matches = contentItems.filter((item) => (contentFilter === "all" || item.type === contentFilter) && (!search?.value || `${item.name} ${item.slug}`.toLowerCase().includes(search.value.toLowerCase())));
+      if (list) { list.replaceChildren(); if (!matches.length) { list.textContent = "No hay contenido que coincida con la búsqueda."; } else matches.forEach((item) => list.append(itemRow(item))); }
+      if (recent) { recent.replaceChildren(); if (!contentItems.length) recent.textContent = "Todavía no hay contenido. Crea tu primer producto o colección."; else contentItems.slice(0, 5).forEach((item) => recent.append(itemRow(item, true))); }
+    }
+    search?.addEventListener("input", renderItems);
+    document.querySelectorAll<HTMLButtonElement>("[data-content-filter]").forEach((button) => button.addEventListener("click", () => {
+      contentFilter = button.dataset.contentFilter ?? "all";
+      document.querySelectorAll("[data-content-filter]").forEach((item) => item.classList.toggle("is-active", item === button));
+      renderItems();
+    }));
+
     async function loadContent() {
       try {
         const response = await fetch("/api/admin/content", { headers: { Accept: "application/json" } });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "No se ha podido acceder al panel.");
+        contentItems = data.items;
         if (collectionSelect) {
           collectionSelect.innerHTML = '<option value="">Selecciona una colección</option>';
-          data.collections.forEach((item: { slug: string; name: string }) => {
-            const option = document.createElement("option");
-            option.value = item.slug;
-            option.textContent = item.name;
-            collectionSelect.append(option);
-          });
+          data.collections.forEach((item: { slug: string; name: string }) => { const option = document.createElement("option"); option.value = item.slug; option.textContent = item.name; collectionSelect.append(option); });
         }
-        if (list) {
-          list.textContent = "";
-          if (!data.items.length) list.textContent = "Todavía no hay contenido guardado.";
-          data.items.forEach((item: Record<string, any>) => {
-            const row = document.createElement("div");
-            row.className = "admin-content-row";
-            const title = document.createElement("strong");
-            title.textContent = item.name;
-            const meta = document.createElement("span");
-            meta.textContent = `${item.type === "product" ? "Producto" : "Colección"} · /${item.slug} · ${item.status === "published" ? "Publicado" : "Borrador"}${item.collectionName ? ` · ${item.collectionName}` : ""}`;
-            const edit = document.createElement("button");
-            edit.type = "button";
-            edit.className = "admin-button-secondary";
-            edit.textContent = "Editar";
-            edit.addEventListener("click", () => {
-              const form = document.querySelector<HTMLFormElement>(`[data-content-type="${item.type}"]`);
-              if (!form) return;
-              form.dataset.editId = String(item.id);
-              form.querySelector<HTMLInputElement>('[name="id"]')!.value = String(item.id);
-              const set = (name: string, value: unknown) => {
-                const field = form.elements.namedItem(name);
-                if (field instanceof HTMLInputElement && field.type === "checkbox") field.checked = Boolean(value);
-                else if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) field.value = value == null ? "" : String(value);
-              };
-              set("name", item.name); set("summary", item.summary); set("status", item.status);
-              if (item.type === "collection") {
-                set("tagline", item.tagline); set("introduction", item.introduction); set("ideas", JSON.parse(item.ideasJson || "[]").join("\n")); set("closing", item.closing);
-              } else {
-                set("collection", item.collectionSlug); set("type", item.productType); set("description", item.description);
-                set("price", item.priceCents == null ? "" : (item.priceCents / 100).toFixed(2)); set("format", item.format);
-                set("pages", item.pages); set("coverText", item.coverText); set("options", JSON.parse(item.optionsJson || "[]").join("\n")); set("featured", item.featured);
-              }
-              const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-              if (submit) submit.innerHTML = 'Actualizar ' + (item.type === "product" ? "producto" : "colección") + ' <span aria-hidden="true">↗</span>';
-              selectTab(item.type === "product" ? "products" : "collections");
-              form.scrollIntoView({ behavior: "smooth", block: "start" });
-            });
-            row.append(title, meta, edit);
-            list.append(row);
-          });
-        }
+        document.querySelector<HTMLElement>("[data-stat-products]")!.textContent = String(contentItems.filter((item) => item.type === "product").length);
+        document.querySelector<HTMLElement>("[data-stat-collections]")!.textContent = String(contentItems.filter((item) => item.type === "collection").length);
+        document.querySelector<HTMLElement>("[data-stat-products-detail]")!.textContent = `${contentItems.filter((item) => item.type === "product" && item.status === "published").length} publicados`;
+        document.querySelector<HTMLElement>("[data-stat-collections-detail]")!.textContent = `${contentItems.filter((item) => item.type === "collection" && item.status === "published").length} publicadas`;
+        const analytics = (data.analytics ?? []) as Array<{ date: string; type: string; count: number }>;
+        if (whatsappClicks) whatsappClicks.textContent = new Intl.NumberFormat("es-ES").format(analytics.filter((row) => row.type === "whatsapp_click").reduce((sum, row) => sum + Number(row.count), 0));
+        renderHeatmap(analytics);
+        renderItems();
       } catch (error) {
-        if (list) list.textContent = error instanceof Error ? error.message : "No se pudo conectar con D1.";
+        if (error instanceof TypeError) {
+          if (list) showApiAccessHelp(list);
+          if (recent) showApiAccessHelp(recent);
+        } else {
+          const message = error instanceof Error ? error.message : "No se pudo conectar con D1.";
+          if (list) list.textContent = message;
+          if (recent) recent.textContent = message;
+        }
       }
     }
+
+    const r2Status = document.querySelector<HTMLElement>("[data-r2-status]");
+    const r2Alert = document.querySelector<HTMLElement>("[data-r2-alert]");
+    const r2Metrics = document.querySelector<HTMLElement>("[data-r2-metrics]");
+    const r2ChartWrap = document.querySelector<HTMLElement>("[data-r2-chart-wrap]");
+    const svgNs = "http://www.w3.org/2000/svg";
+    const svgNode = (name: string, attributes: Record<string, string>, text?: string) => {
+      const node = document.createElementNS(svgNs, name);
+      Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, value));
+      if (text) node.textContent = text;
+      return node;
+    };
+    const compactNumber = (value: number) => new Intl.NumberFormat("es-ES", { maximumFractionDigits: 1 }).format(value);
+
+    function drawR2Chart(points: Array<{ date: string; classAPercent: number; classBPercent: number; storagePercent: number }>) {
+      const chart = document.querySelector<SVGSVGElement>("[data-r2-chart]");
+      if (!chart) return;
+      chart.replaceChildren();
+      const left = 46; const right = 704; const top = 19; const bottom = 178; const height = bottom - top;
+      [0, 50, 70, 85, 100].forEach((value) => {
+        const y = bottom - value / 100 * height;
+        chart.append(svgNode("line", { x1: String(left), x2: String(right), y1: String(y), y2: String(y), class: value >= 70 ? "r2-grid r2-threshold" : "r2-grid" }));
+        chart.append(svgNode("text", { x: "8", y: String(y + 4), class: "r2-axis-label" }, `${value}%`));
+      });
+      if (!points.length) return;
+      const series = [
+        { key: "classAPercent", className: "r2-line-a" },
+        { key: "classBPercent", className: "r2-line-b" },
+        { key: "storagePercent", className: "r2-line-storage" },
+      ] as const;
+      series.forEach(({ key, className }) => {
+        const coords = points.map((point, index) => {
+          const x = left + (points.length === 1 ? 0 : index * (right - left) / (points.length - 1));
+          const value = Math.max(0, Math.min(100, point[key]));
+          return `${index ? "L" : "M"}${x.toFixed(1)},${(bottom - value / 100 * height).toFixed(1)}`;
+        }).join(" ");
+        chart.append(svgNode("path", { d: coords, class: className }));
+      });
+      chart.append(svgNode("text", { x: String(left), y: "207", class: "r2-axis-label" }, "Día 1"));
+      chart.append(svgNode("text", { x: String(right), y: "207", class: "r2-axis-label", "text-anchor": "end" }, `Día ${points.length}`));
+    }
+
+    function setR2Meter(prefix: string, used: number, limit: number, display: string) {
+      const value = document.querySelector<HTMLElement>(`[data-r2-${prefix}-value]`);
+      const bar = document.querySelector<HTMLElement>(`[data-r2-${prefix}-bar]`);
+      const percent = limit ? used / limit * 100 : 0;
+      if (value) value.textContent = `${display} · ${compactNumber(percent)} %`;
+      if (bar) { bar.style.width = `${Math.min(100, percent)}%`; bar.classList.toggle("is-warning", percent >= 70); bar.classList.toggle("is-danger", percent >= 85); }
+      return percent;
+    }
+
+    async function loadR2Usage() {
+      if (!r2Status || !r2Alert) return;
+      try {
+        const response = await fetch("/api/admin/r2-usage", { headers: { Accept: "application/json" }, cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "No se pudieron cargar las métricas.");
+        if (!data.configured) {
+          r2Status.textContent = "Pendiente de configuración";
+          r2Status.dataset.level = "setup";
+          r2Alert.replaceChildren();
+          const instructions = document.createElement("p");
+          instructions.textContent = "Para ver la gráfica, crea un token de API de Cloudflare con permiso Account Analytics: Read y guárdalo como secreto R2_ANALYTICS_API_TOKEN en el Worker. El token nunca se envía al navegador.";
+          const link = document.createElement("a"); link.href = "https://dash.cloudflare.com/profile/api-tokens"; link.target = "_blank"; link.rel = "noreferrer"; link.textContent = "Abrir gestión de tokens de Cloudflare ↗";
+          r2Alert.append(instructions, link); return;
+        }
+
+        const totals = data.totals;
+        const a = setR2Meter("a", totals.classA, data.limits.classA, `${compactNumber(totals.classA)} / 1.000.000`);
+        const b = setR2Meter("b", totals.classB, data.limits.classB, `${compactNumber(totals.classB)} / 10.000.000`);
+        const storageGb = totals.storageBytes / 1_000_000_000;
+        const storage = setR2Meter("storage", totals.storageBytes, data.limits.storageBytes, `${compactNumber(storageGb)} / 10 GB`);
+        r2Metrics!.hidden = false; r2ChartWrap!.hidden = false;
+        drawR2Chart(data.points);
+        const updated = document.querySelector<HTMLElement>("[data-r2-updated]");
+        if (updated) updated.textContent = `Actualizado ${new Intl.DateTimeFormat("es-ES", { dateStyle: "short", timeStyle: "short" }).format(new Date(data.period.updatedAt))}`;
+        const highest = Math.max(a, b, storage);
+        const statusLabel = highest >= 100 ? "Límite superado" : highest >= 85 ? "Aviso urgente" : highest >= 70 ? "Aviso preventivo" : "Dentro del margen";
+        const level = highest >= 100 ? "danger" : highest >= 85 ? "danger" : highest >= 70 ? "warning" : "safe";
+        r2Status.textContent = statusLabel; r2Status.dataset.level = level;
+        if (highest >= 85) r2Alert.textContent = "Uso muy próximo o por encima del límite gratuito. Revisa R2 en Cloudflare y reduce o elimina servicios si hace falta.";
+        else if (highest >= 70) r2Alert.textContent = "El uso se acerca al límite gratuito. Revisa la tendencia y el uso real en el panel de Cloudflare.";
+        else r2Alert.textContent = `Uso bajo los umbrales de aviso. ${totals.unclassified ? `${compactNumber(totals.unclassified)} operaciones sin clasificar se cuentan preventivamente en ambas clases.` : ""}`;
+        r2Alert.dataset.level = level;
+      } catch (error) {
+        r2Status.textContent = "Métricas no disponibles"; r2Status.dataset.level = "warning";
+        r2Alert.textContent = error instanceof Error ? error.message : "No se pudieron cargar las métricas de R2.";
+        r2Alert.dataset.level = "warning";
+      }
+    }
+
+    document.querySelectorAll<HTMLInputElement>('[data-admin-form] input[type="file"]').forEach((input) => input.addEventListener("change", async () => {
+      const file = input.files?.[0]; const form = input.closest<HTMLFormElement>("form");
+      if (!file || !form) return;
+      const preview = form.querySelector<HTMLImageElement>("[data-image-preview]");
+      feedbackText(form, "Subiendo imagen…");
+      try {
+        const upload = new FormData(); upload.set("file", file);
+        const response = await fetch("/api/admin/media", { method: "POST", body: upload });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "No se pudo subir la imagen.");
+        setField(form, "imageKey", data.key);
+        if (preview) { preview.src = data.url; preview.hidden = false; }
+        feedbackText(form, "Imagen subida. Guarda el formulario para aplicarla.");
+      } catch (error) {
+        const feedback = form.querySelector<HTMLElement>("[data-form-feedback]");
+        if (error instanceof TypeError && feedback) { feedbackText(form, "", true); showApiAccessHelp(feedback); }
+        else feedbackText(form, error instanceof Error ? error.message : "No se pudo subir la imagen.", true);
+      }
+    }));
 
     document.querySelectorAll<HTMLFormElement>("[data-admin-form]").forEach((form) => {
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const fields = new FormData(form);
         const lines = (key: string) => String(fields.get(key) ?? "").split("\n").map((line) => line.trim()).filter(Boolean);
-        const payload: Record<string, unknown> = {
-          type: form.dataset.contentType,
-          name: fields.get("name"),
-          summary: fields.get("summary"),
-          status: fields.get("status"),
-        };
-        const editId = fields.get("id");
-        if (editId) payload.id = Number(editId);
-        if (payload.type === "collection") Object.assign(payload, {
-          tagline: fields.get("tagline"), introduction: fields.get("introduction"), ideas: lines("ideas"), closing: fields.get("closing"),
-        });
-        if (payload.type === "product") Object.assign(payload, {
-          collection: fields.get("collection"), productType: fields.get("type"), description: fields.get("description"),
-          price: fields.get("price") ? Number(fields.get("price")) : null, format: fields.get("format"),
-          pages: fields.get("pages") ? Number(fields.get("pages")) : null, coverText: fields.get("coverText"),
-          options: lines("options"), featured: fields.has("featured"),
-        });
-        const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-        if (submit) submit.disabled = true;
+        const payload: Record<string, unknown> = { type: form.dataset.contentType, name: fields.get("name"), summary: fields.get("summary"), status: fields.get("status"), imageKey: fields.get("imageKey") || null };
+        const editId = fields.get("id"); if (editId) payload.id = Number(editId);
+        if (payload.type === "collection") Object.assign(payload, { tagline: fields.get("tagline"), introduction: fields.get("introduction"), ideas: lines("ideas"), closing: fields.get("closing") });
+        if (payload.type === "product") Object.assign(payload, { collection: fields.get("collection"), productType: fields.get("type"), description: fields.get("description"), price: fields.get("price") ? Number(fields.get("price")) : null, format: fields.get("format"), pages: fields.get("pages") ? Number(fields.get("pages")) : null, coverText: fields.get("coverText"), options: lines("options"), featured: fields.has("featured") });
+        const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]'); if (submit) submit.disabled = true;
         feedbackText(form, "Guardando…");
         try {
           const response = await fetch("/api/admin/content", { method: editId ? "PUT" : "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.error || "No se pudo guardar el contenido.");
-          feedbackText(form, `${editId ? "Actualizado" : "Guardado"} correctamente. Dirección: /${data.slug}`);
-          delete form.dataset.editId;
+          const data = await response.json(); if (!response.ok) throw new Error(data.error || "No se pudo guardar el contenido.");
+          const oldKey = form.dataset.originalImageKey; const newKey = String(payload.imageKey ?? "");
+          if (oldKey && oldKey !== newKey) void fetch("/api/admin/media", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: oldKey }) });
+          delete form.dataset.originalImageKey; delete form.dataset.editId;
           form.reset();
-          const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-          if (submitButton) submitButton.innerHTML = `Guardar ${form.dataset.contentType === "product" ? "producto" : "colección"} <span aria-hidden="true">↗</span>`;
+          if (submit) submit.textContent = `Guardar ${form.dataset.contentType === "product" ? "producto" : "colección"}`;
+          feedbackText(form, `${editId ? "Actualizado" : "Guardado"} correctamente. ${payload.status === "draft" ? "Queda como borrador." : "Ya está publicado."}`);
           await loadContent();
         } catch (error) {
-          feedbackText(form, error instanceof Error ? error.message : "No se pudo guardar el contenido.", true);
-        } finally {
-          if (submit) submit.disabled = false;
+          const feedback = form.querySelector<HTMLElement>("[data-form-feedback]");
+          if (error instanceof TypeError && feedback) { feedbackText(form, "", true); showApiAccessHelp(feedback); }
+          else feedbackText(form, error instanceof Error ? error.message : "No se pudo guardar el contenido.", true);
         }
+        finally { if (submit) submit.disabled = false; }
       });
       form.addEventListener("reset", () => {
-        feedbackText(form, "");
-        delete form.dataset.editId;
-        const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-        if (submitButton) submitButton.innerHTML = `Guardar ${form.dataset.contentType === "product" ? "producto" : "colección"} <span aria-hidden="true">↗</span>`;
+        delete form.dataset.editId; delete form.dataset.originalImageKey;
+        const preview = form.querySelector<HTMLImageElement>("[data-image-preview]"); if (preview) { preview.hidden = true; preview.removeAttribute("src"); }
+        const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]'); if (submit) submit.textContent = `Guardar ${form.dataset.contentType === "product" ? "producto" : "colección"}`;
       });
     });
-
     void loadContent();
+    void loadR2Usage();
+    window.setInterval(() => { if (document.visibilityState === "visible") void loadR2Usage(); }, 15 * 60 * 1000);
   </script>
 </AdminLayout>

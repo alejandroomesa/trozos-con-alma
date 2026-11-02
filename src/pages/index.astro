@@ -2,12 +2,13 @@
 import SiteLayout from "../layouts/SiteLayout.astro";
 import ProductCard from "../components/ProductCard.astro";
 import { enlaceWhatsApp } from "../data/contacto";
-import { colecciones } from "../data/colecciones";
-import { productosDemo } from "../data/productos-demo";
-export const prerender = true;
+import { getPublicCollections, getPublicProducts } from "../lib/public-content";
+export const prerender = false;
 
 const whatsappLink = enlaceWhatsApp("Hola, me gustaría consultar un libro personalizado.");
-const destacados = productosDemo.filter((producto) => producto.destacado);
+const [colecciones, productos] = await Promise.all([getPublicCollections(), getPublicProducts()]);
+const destacados = productos.filter((producto) => producto.destacado);
+const hayProductosDeMuestra = productos.some((producto) => producto.isDemo);
 ---
 
 <SiteLayout>
@@ -70,9 +71,12 @@ const destacados = productosDemo.filter((producto) => producto.destacado);
           <article class={`collection-card collection-card-${coleccion.slug}`}>
             <a class="collection-card-link" href={`/colecciones/${coleccion.slug}/`} aria-label={`Descubrir libros para ${coleccion.nombre}`}>
               <div class="card-illustration" aria-hidden="true">
+                {coleccion.imageUrl && <img class="collection-card-upload" src={coleccion.imageUrl} alt="" loading="lazy" />}
+                {!coleccion.imageUrl && <>
                 <span class="card-index">0{index + 1}</span>
                 <span class="card-symbol">{coleccion.slug === "boda" ? "∞" : coleccion.slug === "bautizo" ? "❋" : "✳"}</span>
                 <span class="card-ribbon"></span>
+                </>}
               </div>
               <div class="card-copy">
                 <span class="eyebrow">Colección</span>
@@ -93,9 +97,9 @@ const destacados = productosDemo.filter((producto) => producto.destacado);
           <p class="eyebrow">Ideas para empezar</p>
           <h2>Así podrían verse<br /><em>vuestros libros.</em></h2>
         </div>
-        <p class="section-aside">Una pequeña muestra ficticia para enseñar cómo presentaremos los modelos, sus detalles y un precio orientativo.</p>
+        <p class="section-aside">Descubre modelos y detalles de libros personalizados para cada celebración.</p>
       </div>
-      <div class="demo-notice"><span>CATÁLOGO DE PRUEBA</span> Nombres, portadas, opciones y precios inventados para previsualizar la web.</div>
+      {hayProductosDeMuestra && <div class="demo-notice"><span>PRODUCTOS DE MUESTRA</span> Los productos marcados como ejemplo son ficticios y provisionales.</div>}
       <div class="product-grid product-grid-featured">
         {destacados.map((producto) => <ProductCard product={producto} />)}
       </div>
